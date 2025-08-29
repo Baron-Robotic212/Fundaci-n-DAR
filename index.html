@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundación DAR</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #fff7f0;
+      color: #333;
+    }
+
+    /* ================= PRELOADER ================= */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff7f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 2000;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #preloader img {
+      width: 90px;
+      height: 90px;
+      margin: 10px;
+      animation: spin 2s linear infinite;
+    }
+
+    #preloader p {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #ff7b00;
+      font-weight: bold;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    #preloader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* ================= MENÚ SUPERIOR ================= */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #ff7b00, #ffae42);
+      padding: 15px 20px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar h1 {
+      color: white;
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 1px;
+      font-weight: bold;
+    }
+
+    .menu {
+      display: flex;
+      gap: 20px;
+    }
+
+    .menu a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .menu a:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+
+    /* Botón hamburguesa */
+    .menu-toggle {
+      display: none;
+      font-size: 26px;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* ================= CONTENIDO ================= */
+    .content {
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    section {
+      margin-bottom: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    section:hover {
+      transform: translateY(-3px);
+    }
+
+    section h2 {
+      color: #ff7b00;
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    section p {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #ff7b00;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+      background: #e86c00;
+      transform: scale(1.05);
+    }
+
+    /* ================= TARJETAS ================= */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: #fff3e0;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    /* ================= BURBUJA WHATSAPP ================= */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      background-color: #25D366;
+      color: white;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 26px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.2s;
+      text-decoration: none;
+      z-index: 1000;
+    }
+
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+    }
+
+    /* ================= CHAT ================= */
+    .chat-box {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      right: 15px;
+      background: white;
+      width: 90%;
+      max-width: 300px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
+      padding: 12px;
+      font-size: 14px;
+      z-index: 1000;
+    }
+
+    .chat-header {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #25D366;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      color: #666;
+      transition: color 0.2s;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
+
+    .chat-message {
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border-radius: 15px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    .chat-message-left {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 15px 15px 15px 5px;
+      text-align: left;
+    }
+
+    .chat-message-right {
+      background: #25D366;
+      color: white;
+      margin-left: auto;
+      border-radius: 15px 15px 5px 15px;
+      text-align: right;
+      font-size: 14px;
+      padding: 8px;
+      display: block;
+      max-width: 30%;
+    }
+
+    /* ================= FORMULARIO ================= */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    input, textarea {
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+
+    button {
+      background: #ff7b00;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #e86c00;
+    }
+
+    /* ================= FOOTER ================= */
+    footer {
+      background: linear-gradient(90deg, #ff7b00, #ffae42);
+      color: white;
+      padding: 30px 15px 10px;
+      margin-top: 40px;
+    }
+
+    .footer-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
+      text-align: left;
+    }
+
+    .footer-section h3, 
+    .footer-section h4 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .footer-section p,
+    .footer-section ul {
+      font-size: 14px;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 6px;
+    }
+
+    .footer-section ul li a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-section ul li a:hover {
+      color: #333;
+    }
+
+    .social-icons {
+      margin-top: 10px;
+    }
+
+    .social-icons a {
+      color: white;
+      margin: 0 8px;
+      font-size: 22px;
+      text-decoration: none;
+      transition: transform 0.3s;
+    }
+
+    .social-icons a:hover {
+      transform: scale(1.2);
+      color: #333;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,0.4);
+      padding-top: 10px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 768px) {
+      .menu {
+        display: none;
+        flex-direction: column;
+        background: #ff7b00;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 200px;
+        padding: 15px;
+        border-radius: 0 0 10px 10px;
+      }
+
+      .menu a {
+        padding: 10px;
+        display: block;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .navbar h1 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <img src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" alt="Manos dando">
+    <p>Cargando...</p>
+  </div>
+
+  <!-- MENÚ -->
+  <div class="navbar">
+    <h1>Fundación DAR 🧡</h1>
+    <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+    <div class="menu" id="menu">
+      <a href="#inicio">Inicio</a>
+      <a href="#acerca">Quiénes Somos</a>
+      <a href="#cristocentrico">Cristocéntrico</a>
+      <a href="#proyectos">Proyectos</a>
+      <a href="#donar">Donar</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="content">
+    <section id="inicio">
+      <h2>Bienvenidos</h2>
+      <p>En <strong>Fundación DAR</strong> creemos en el poder de ayudar, compartir y transformar vidas. 
+      Nuestro objetivo es tender una mano a quienes más lo necesitan, con amor y esperanza. 💡</p>
+      <a href="#donar" class="btn">Apóyanos con tu donación</a>
+    </section>
+
+    <section id="acerca">
+      <h2>Quiénes Somos</h2>
+      <p>Somos una organización sin fines de lucro que trabaja por el bienestar de comunidades vulnerables, 
+      promoviendo la educación, la solidaridad y el crecimiento espiritual. 🙌</p>
+    </section>
+
+    <section id="cristocentrico">
+      <h2>Todo es Cristocéntrico ✝️</h2>
+      <p>Cada proyecto que realizamos tiene como fundamento la fe en Jesucristo. Creemos que toda ayuda debe 
+      reflejar el amor de Dios y llevar esperanza no solo material, sino también espiritual. 🙏</p>
+    </section>
+
+    <section id="proyectos">
+      <h2>Proyectos Realizados</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Entrega de Alimentos</h3>
+          <p>Distribuimos alimentos a familias vulnerables en barrios necesitados.</p>
+        </div>
+        <div class="card">
+          <h3>Brigadas de Salud</h3>
+          <p>Apoyamos con jornadas médicas y orientación en salud preventiva.</p>
+        </div>
+        <div class="card">
+          <h3>Apoyo Educativo</h3>
+          <p>Impulsamos la educación con tutorías y materiales escolares.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="donar">
+      <h2>Donaciones ❤️</h2>
+      <p>Tu apoyo es vital para continuar transformando vidas. Cada aporte nos ayuda a llegar más lejos.</p>
+      <a href="https://www.paypal.com" target="_blank" class="btn">Donar Ahora</a>
+    </section>
+
+    <section id="contacto">
+      <h2>Formulario de Contacto 📩</h2>
+      <p>¿Quieres hablar con nosotros? Déjanos tus datos y te responderemos pronto.</p>
+      <form>
+        <input type="text" placeholder="Tu Nombre" required>
+        <input type="email" placeholder="Tu Correo" required>
+        <textarea placeholder="Escribe tu mensaje..." required></textarea>
+        <button type="submit">Enviar Mensaje</button>
+      </form>
+    </section>
+  </div>
+
+  <!-- BURBUJA WHATSAPP -->
+  <div class="whatsapp-float" onclick="toggleChat()">💬</div>
+
+  <!-- CHAT FLOTANTE -->
+  <div class="chat-box" id="chatBox">
+    <span class="close-btn" onclick="closeChat()">✖</span>
+    <div class="chat-header">Fundación DAR</div>
+    <div class="chat-message chat-message-left">👋 Hola, ¿en qué podemos ayudarte?</div>
+    <a href="https://wa.me/573001234567?text=¡Hola!%20Quiero%20más%20información%20sobre%20Fundación%20DAR" 
+       target="_blank" 
+       class="chat-message chat-message-right" 
+       style="text-decoration: none;">
+      Abrir Chat ✔︎
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-container">
+      <!-- Sección 1 -->
+      <div class="footer-section">
+        <h3>Fundación DAR 🧡</h3>
+        <p>Transformando vidas con amor, esperanza y fe en Cristo. 🙏</p>
+      </div>
+
+      <!-- Sección 2 -->
+      <div class="footer-section">
+        <h4>Enlaces Rápidos</h4>
+        <ul>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#acerca">Quiénes Somos</a></li>
+          <li><a href="#proyectos">Proyectos</a></li>
+          <li><a href="#donar">Donar</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+
+      <!-- Sección 3 -->
+      <div class="footer-section">
+        <h4>Contáctanos</h4>
+        <p>📍 Ciudad, País</p>
+        <p>📧 contacto@fundaciondar.org</p>
+        <p>📞 +57 300 123 4567</p>
+      </div>
+
+      <!-- Sección 4 -->
+      <div class="footer-section">
+        <h4>Síguenos</h4>
+        <div class="social-icons">
+          <a href="#">🌐</a>
+          <a href="#">📘</a>
+          <a href="#">🐦</a>
+          <a href="#">📸</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Fundación DAR. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    /* CHAT */
+    function toggleChat() {
+      const chat = document.getElementById("chatBox");
+      chat.style.display = (chat.style.display === "block") ? "none" : "block";
+    }
+
+    function closeChat() {
+      document.getElementById("chatBox").style.display = "none";
+    }
+
+    /* MENU */
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+    }
+
+    /* PRELOADER */
+    window.addEventListener("load", () => {
+      const preloader = document.getElementById("preloader");
+      setTimeout(() => {
+        preloader.classList.add("hidden");
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
+
